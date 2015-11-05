@@ -33,6 +33,30 @@ Returns the resulting value for DISPLAY."
   (getenv "DISPLAY")
   )
 
+      (pbpaste)
+      (putclip)
+ )
+(defvar klm:xsel-clip-command
+  (cond ((eq system-type 'darwin) 
+         (let ((xclip (executable-find "xclip")))
+           (if xclip
+               (list xclip "-i")
+             "pbcopy")))
+        ((eq system-type 'cygwin) (list (executable-find "putclip")))
+        ;; Linux &c:
+        (t (list (executable-find "xsel") "--input" "--clipboard")))
+  "X clip command tailored for local conditions.")
+(defvar klm:xsel-paste-command
+  (cond ((eq system-type 'darwin) 
+         (let ((xclip (executable-find "xclip")))
+           (if xclip
+               (list xclip "-o")
+             "pbpaste")))
+        ((eq system-type 'cygwin) (list (executable-find "getclip")))
+        ;; Linux &c:
+        (t (list (executable-find "xsel") "--output" "--clipboard")))
+  "X clip command tailored for local conditions.")
+
 (defun klm:xsel-copy (from to)
   "Place contents of region in X copy/paste buffer, using shell command.
 
@@ -40,22 +64,20 @@ With universal argument, prompt to set DISPLAY."
 
   (interactive "r")
   (when (klm:xsel-check-get-DISPLAY current-prefix-arg)
-    (let ((command (cond ((eq system-type 'darwin) "pbcopy")
-                         ((eq system-type 'cygwin) "putclip")
-                         ;; Linux &c:
-                         (t "xsel --input --clipboard"))))
-      (shell-command-on-region from to command)
-      (deactivate-mark)
-      )))
+    ;(shell-command-on-region from to klm:xsel-clip-command)
+    (apply 'call-process-region
+     (append (list from to (car klm:xsel-clip-command) nil nil nil)
+             (cdr klm:xsel-clip-command)))
+    (deactivate-mark)
+    ))
 
 (defun klm:xsel-paste ()
   "Place contents of region in X copy/paste buffer, using shell command."
   (interactive "")
   (when (klm:xsel-check-get-DISPLAY current-prefix-arg)
-    (let ((command (cond ((eq system-type 'darwin) "pbpaste")
-                         ((eq system-type 'cygwin) "getclip")
-                         ;; Linux &c:
-                         (t "xsel --output --clipboard"))))
-      (shell-command command 1)
-      (exchange-point-and-mark)
-      )))
+    (shell-command (apply 'concat
+                          (append (list (car klm:xsel-paste-command) " ")
+                                  (cdr klm:xsel-paste-command)))
+                   1)
+    (exchange-point-and-mark)
+    ))
