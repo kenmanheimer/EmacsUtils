@@ -138,6 +138,7 @@ current-buffer behavior.)"
   "Another multishell-pop-to-shell completion history container,
 including paths.")
 
+;;;###autoload
 (defun multishell-pop-to-shell (&optional arg)
   "Easily navigate to and within multiple shell buffers, local and remote.
 
