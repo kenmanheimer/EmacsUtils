@@ -166,6 +166,7 @@ current-buffer behavior.)"
         (setq got (cons entry got))))
     got))
 
+;;;###autoload
 (defun multishell-pop-to-shell (&optional arg)
   "Easily navigate to and within multiple shell buffers, local and remote.
 
