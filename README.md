@@ -7,18 +7,7 @@ I've been using Gnu Emacs since it was publicly available (1985?), and have cont
 
 * **[multishell.el](./multishell.el)**
 
-  I use the emacs shell a *lot*. I bind this to Meta-space to make it easy to:
-
-  * Get to a shell buffer with a keystroke,
-  * ... or to the input point for the current shell buffer.
-  * Use universal arguments to launch and choose between alternate shell
-    buffers and to select which is default.
-  * Prepend a path to a new shell name to launch a shell in that directory,
-  * and use Emacs tramp path syntax to launch a remote shell.
-
-  On top of emacs' powerful shell and tramp facilities, this turns emacs
-  into a versatile tool for conducting operations and development across
-  numerous hosts.
+Manage interaction with multiple local and remote shell buffers - now in its own repository: https://github.com/kenmanheimer/EmacsMultishell (to ease ELPA maintenance).
 
 * **[xsel.el](./xsel.el)**
 
